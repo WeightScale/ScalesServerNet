@@ -5,8 +5,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.util.Log;
-import com.kostya.scaleswifinet.Main;
-import com.kostya.scaleswifinet.service.ServiceScalesNet;
+import com.kostya.scales_server_net.Main;
+import com.kostya.scales_server_net.service.ServiceScalesNet;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;

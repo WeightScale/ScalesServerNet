@@ -19,7 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import com.kostya.scaleswifinet.settings.ActivityPreferences;
+import com.kostya.scales_server_net.settings.ActivityPreferences;
 
 /**
  * @author Kostya

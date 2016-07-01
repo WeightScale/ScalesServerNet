@@ -102,4 +102,12 @@
         <item name="virtualButtonPressedDrawable">@drawable/item_background_holo_light</item>
     </style>
 
+    <style name="PreferencesScreenStyle" >
+        <item name="android:layout">@layout/preference_category</item>
+    </style>
+
+    <style name="PreferencesEditTextStyle" >
+        <item name="android:layout">@layout/preference_category</item>
+    </style>
+
 </resources>

@@ -12,8 +12,16 @@
     <item name="android:spinnerStyle">@style/CustomSpinner</item>
     <item name="android:tabWidgetStyle">@style/CustomTabWidget</item>
     <item name="numberPickerStyle">@style/NPWidget.Holo.Light.NumberPicker</item>
-    <!--<item name="dialogFilterADCStyle">@style/WeightScaleDialogFilter</item>-->
+
 </style>
+
+<style name="Theme.CustomPreference" parent="MyTheme">
+    <item name="android:preferenceScreenStyle">@style/PreferencesScreenStyle</item>
+    <item name="android:preferenceStyle">@style/PreferencesScreenStyle</item>
+    <item name="android:checkBoxPreferenceStyle">@style/PreferencesScreenStyle</item>
+    <item name="android:editTextPreferenceStyle">@style/PreferencesEditTextStyle</item>
+</style>
+
 <style name="ProgressDialogCustom" parent="android:Theme.Panel">
     <item name="android:alertDialogStyle">@style/CustomProgressDialogStyle</item>
 </style>

@@ -15,9 +15,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
-import com.kostya.scaleswifinet.Internet;
-import com.kostya.scaleswifinet.R;
-import com.kostya.scaleswifinet.provider.EventsTable;
+import com.kostya.scales_server_net.Internet;
+import com.kostya.scales_server_net.R;
+import com.kostya.scales_server_net.provider.EventsTable;
 
 import java.io.IOException;
 import java.util.*;

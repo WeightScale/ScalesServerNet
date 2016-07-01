@@ -11,7 +11,7 @@ package com.kostya.scales_server_net;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import com.kostya.scaleswifinet.service.ServiceScalesNet;
+import com.kostya.scales_server_net.service.ServiceScalesNet;
 
 /**
  * @author Kostya

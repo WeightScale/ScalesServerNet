@@ -12,8 +12,8 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
-import com.kostya.scaleswifinet.provider.EventsTable;
-import com.kostya.scaleswifinet.settings.Preferences;
+import com.kostya.scales_server_net.provider.EventsTable;
+import com.kostya.scales_server_net.settings.Preferences;
 
 import java.io.File;
 

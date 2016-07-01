@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="numberPickerStyle" format="reference" />
-    <attr name="dialogFilterADCStyle" format="reference"/>
+    <attr name="myPreferenceStyle" format="reference"/>
 
     <declare-styleable name="dialogFilterADC">
         <attr name="minFilterADC" format="integer"/>

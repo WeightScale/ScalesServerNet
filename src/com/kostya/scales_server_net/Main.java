@@ -13,8 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import com.kostya.scaleswifinet.service.ServiceScalesNet;
-import com.kostya.scaleswifinet.transferring.DataTransferringManager;
+import com.kostya.scales_server_net.service.ServiceScalesNet;
+import com.kostya.scales_server_net.transferring.DataTransferringManager;
 
 /**
  * @author Kostya

@@ -6,8 +6,8 @@ import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
-import com.kostya.scaleswifinet.NumberPicker;
-import com.kostya.scaleswifinet.R;
+import com.kostya.scales_server_net.NumberPicker;
+import com.kostya.scales_server_net.R;
 
 import java.util.Arrays;
 

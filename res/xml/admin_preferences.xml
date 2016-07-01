@@ -48,9 +48,9 @@
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
-    <PreferenceCategory android:title="Настройки для отправки данных">
-        <PreferenceScreen android:title="НАСТРОЙКИ ДЛЯ GOOGLE DISK" android:summary="Настройки для отправки данных через интернет на Google disk.">
-            <PreferenceCategory android:title="Настройки Google SpreadSheet">
+    <PreferenceCategory android:title="Отправки данных">
+        <PreferenceScreen android:title="настройки google disk" android:summary="Настройки для отправки данных через интернет на Google disk.">
+            <PreferenceCategory android:title="НАСТРОЙКИ GOOGLE DISK">
                 <EditTextPreference android:title="Таблица:" android:summary="@string/TEXT_MESSAGE7"
                                     android:key="@string/KEY_SHEET" android:gravity="right" android:inputType="text"/>
                 <EditTextPreference android:title="@string/User_google_disk" android:summary="Account Google (Необжодимо создать в Google)." android:key="@string/KEY_USER" android:gravity="right"

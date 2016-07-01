@@ -7,8 +7,8 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.*;
-import com.kostya.scaleswifinet.provider.EventsTable;
-import com.kostya.scaleswifinet.provider.SystemTable;
+import com.kostya.scales_server_net.provider.EventsTable;
+import com.kostya.scales_server_net.provider.SystemTable;
 
 import java.util.List;
 

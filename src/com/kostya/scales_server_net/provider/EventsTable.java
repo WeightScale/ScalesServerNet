@@ -5,8 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import com.kostya.scaleswifinet.Main;
-import com.kostya.scaleswifinet.task.IntentServiceHttpPost;
+import com.kostya.scales_server_net.Main;
+import com.kostya.scales_server_net.task.IntentServiceHttpPost;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

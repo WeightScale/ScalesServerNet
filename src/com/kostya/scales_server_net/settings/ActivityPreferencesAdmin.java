@@ -23,11 +23,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.*;
 import com.google.common.io.ByteStreams;
-import com.kostya.scaleswifinet.Globals;
-import com.kostya.scaleswifinet.R;
-import com.kostya.scaleswifinet.provider.SenderTable;
-import com.kostya.scaleswifinet.provider.SystemTable;
-import com.kostya.scaleswifinet.service.ServiceScalesNet;
+import com.kostya.scales_server_net.Globals;
+import com.kostya.scales_server_net.R;
+import com.kostya.scales_server_net.provider.SenderTable;
+import com.kostya.scales_server_net.provider.SystemTable;
+import com.kostya.scales_server_net.service.ServiceScalesNet;
 
 import java.io.*;
 import java.util.List;

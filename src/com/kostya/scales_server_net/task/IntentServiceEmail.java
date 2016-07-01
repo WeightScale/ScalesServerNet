@@ -4,7 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import com.kostya.scaleswifinet.Internet;
+import com.kostya.scales_server_net.Internet;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
