@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.kostya.scales_server_net.task;
+
+import android.app.IntentService;
+import android.content.Intent;
+import android.os.Bundle;
+import com.konst.sms_commander.SMS;
+
+/**
+ * @author Kostya  on 28.06.2016.
+ */
+public class IntentServiceSMS extends IntentService {
+    public static final String EXTRA_ADDRESS_SMS = "com.kostya.scaleswifinet.task.EXTRA_ADDRESS_SMS";
+    public static final String EXTRA_TEXT_SMS = "com.kostya.scaleswifinet.task.EXTRA_TEXT_SMS";
+
+    public IntentServiceSMS(String name) { super(name); }
+    public IntentServiceSMS() { super(IntentServiceSMS.class.getName()); }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        Bundle bundle = intent.getExtras();
+        if(bundle != null){
+            String address = bundle.getString(EXTRA_ADDRESS_SMS);
+            String body = bundle.getString(EXTRA_TEXT_SMS);
+
+            try {
+                SMS.sendSMS(address, body);
+            } catch (Exception e) {
+
+            }
+        }
+
+    }
+}
