@@ -1,5 +1,5 @@
 package com.kostya.scales_server_net;
-/** Удалил бяку */
+/** Удалил бяку */////
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
