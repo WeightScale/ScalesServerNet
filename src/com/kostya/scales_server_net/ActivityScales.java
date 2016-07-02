@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,7 +20,7 @@ import com.kostya.scales_server_net.settings.ActivityPreferences;
  */
 public class ActivityScales extends Activity implements View.OnClickListener{
     ImageView buttonBack;
-    TextView textViewWeight, textViewPath;
+    TextView textViewWeight ;
     Receiver receiver;
     private static final int FILE_SELECT_CODE = 10;
     private static  final String TAG = ActivityScales.class.getName();
@@ -33,8 +35,19 @@ public class ActivityScales extends Activity implements View.OnClickListener{
         buttonBack.setOnClickListener(this);
 
         textViewWeight = (TextView)findViewById(R.id.weightTextView);
-        textViewPath = (TextView)findViewById(R.id.textViewPath);
-        textViewPath.setOnClickListener(this);
+        textViewWeight.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                //startActivityForResult(new Intent(Settings.ACTION_WIFI_SETTINGS), 0);
+                //final ComponentName toLaunch = new ComponentName("com.android.settings",Settings.ACTION_WIFI_SETTINGS);
+                final Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                //intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                //intent.setComponent(toLaunch);
+                //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivityForResult(intent,0);
+                return false;
+            }
+        });
 
         findViewById(R.id.imageMenu).setOnClickListener(this);
         receiver = new Receiver();
@@ -51,9 +64,6 @@ public class ActivityScales extends Activity implements View.OnClickListener{
                 break;
             case R.id.imageMenu:
                 openOptionsMenu();
-                break;
-            case R.id.textViewPath:
-                showFileChooser();
                 break;
             default:
         }

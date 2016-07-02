@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/settings_port">
         <PreferenceScreen android:title="УСТАНОВКИ COM ПОРТА" android:summary="Настройки COM порта для связи.">
-            <com.kostya.scaleswifinet.settings.DialogSpeedPort android:key="@string/KEY_SPEED_PORT"
+            <com.kostya.scales_server_net.settings.DialogSpeedPort android:key="@string/KEY_SPEED_PORT"
                                                                android:title="Скорость:"
                                                                android:summary="Скорость передачи данных."
                                                                android:defaultValue="9600"
@@ -37,7 +37,7 @@
     <PreferenceCategory android:title="Настройки WiFi">
         <PreferenceScreen android:title="УСТАНОВКИ СЕТИ WIFI. " android:summary="Установки сети в которой должен работать сервис.">
             <PreferenceCategory android:title="Конфигурация из списка">
-                <com.kostya.scaleswifinet.settings.ListPreferenceWifi
+                <com.kostya.scales_server_net.settings.ListPreferenceWifi
                         android:summary="Сеть по умолчанию из списка сохраненных.
                         Выбора конкретной сети из списка сохраненных кофигураций если есть.Если сети нет в списке создайте имя сети и ключ."
                         android:key="@string/KEY_WIFI_DEFAULT"/>
