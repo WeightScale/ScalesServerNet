@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <usb-device vendor-id="9025"/><!-- Vendor ID of Arduino -->
-    <usb-device vendor-id="1659"/><!--Prolific Technology, Inc.-->
-    <usb-device vendor-id="1027"/><!--Future Technology Devices International, Ltd (FTDI)-->
-    <usb-device vendor-id="1003"/><!--Atmel Corp.-->
-    <usb-device vendor-id="17224"/><!--WinChipHead-->
-    <usb-device vendor-id="6790"/><!--QinHeng Electronics-->
-    <usb-device vendor-id="1137"/><!--Philips (or NXP)-->
-    <usb-device vendor-id="4292"/><!--Cygnal Integrated Products, Inc.-->
+<!--<resources>
+    <usb-device vendor-id="9025"/>&lt;!&ndash; Vendor ID of Arduino &ndash;&gt;
+    <usb-device vendor-id="1659"/>&lt;!&ndash;Prolific Technology, Inc.&ndash;&gt;
+    <usb-device vendor-id="1027"/>&lt;!&ndash;Future Technology Devices International, Ltd (FTDI)&ndash;&gt;
+    <usb-device vendor-id="1003"/>&lt;!&ndash;Atmel Corp.&ndash;&gt;
+    <usb-device vendor-id="17224"/>&lt;!&ndash;WinChipHead&ndash;&gt;
+    <usb-device vendor-id="6790"/>&lt;!&ndash;QinHeng Electronics&ndash;&gt;
+    <usb-device vendor-id="1137"/>&lt;!&ndash;Philips (or NXP)&ndash;&gt;
+    <usb-device vendor-id="4292"/>&lt;!&ndash;Cygnal Integrated Products, Inc.&ndash;&gt;
 
-    <usb-accessory vendor-id="9025"/><!-- Vendor ID of Arduino -->
-    <usb-accessory vendor-id="1659"/><!--Prolific Technology, Inc.-->
-    <usb-accessory vendor-id="1027"/><!--Future Technology Devices International, Ltd (FTDI)-->
-    <usb-accessory vendor-id="1003"/><!--Atmel Corp.-->
-    <usb-accessory vendor-id="17224"/><!--WinChipHead-->
-    <usb-accessory vendor-id="6790"/><!--QinHeng Electronics-->
-    <usb-accessory vendor-id="1137"/><!--Philips (or NXP)-->
+    <usb-accessory vendor-id="9025"/>&lt;!&ndash; Vendor ID of Arduino &ndash;&gt;
+    <usb-accessory vendor-id="1659"/>&lt;!&ndash;Prolific Technology, Inc.&ndash;&gt;
+    <usb-accessory vendor-id="1027"/>&lt;!&ndash;Future Technology Devices International, Ltd (FTDI)&ndash;&gt;
+    <usb-accessory vendor-id="1003"/>&lt;!&ndash;Atmel Corp.&ndash;&gt;
+    <usb-accessory vendor-id="17224"/>&lt;!&ndash;WinChipHead&ndash;&gt;
+    <usb-accessory vendor-id="6790"/>&lt;!&ndash;QinHeng Electronics&ndash;&gt;
+    <usb-accessory vendor-id="1137"/>&lt;!&ndash;Philips (or NXP)&ndash;&gt;
     <usb-accessory vendor-id="4292"/>
 
+</resources>-->
+<resources>
+    <usb-device />
 </resources>

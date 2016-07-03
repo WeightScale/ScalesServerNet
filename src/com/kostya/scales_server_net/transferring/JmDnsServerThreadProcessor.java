@@ -7,11 +7,11 @@ import java.net.ServerSocket;
 
 public class JmDnsServerThreadProcessor {
 
-    private final ServerSocket serverSocket = null;
     private Thread serverProcessorThread;
+    private ServerSocketProcessorRunnable serverSocketProcessor;
 
     public void startServerProcessorThread(Context context) {
-        ServerSocketProcessorRunnable serverSocketProcessor = new ServerSocketProcessorRunnable(serverSocket, context);
+        serverSocketProcessor = new ServerSocketProcessorRunnable(context);
         serverProcessorThread = new Thread(serverSocketProcessor);
         serverProcessorThread.start();
     }
@@ -20,8 +20,9 @@ public class JmDnsServerThreadProcessor {
 
         try {
             // make sure you close the socket upon exiting
-            if (serverSocket != null)
-                serverSocket.close();
+            /*if (serverSocket != null)
+                serverSocket.close();*/
+            serverSocketProcessor.closedSocket();
 
             if (serverProcessorThread != null)
                 serverProcessorThread.interrupt();

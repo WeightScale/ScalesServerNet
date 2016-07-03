@@ -74,6 +74,7 @@ public class ServiceScalesNet extends Service{
         filter.addAction(ACTION_USB_PERMISSION);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        filter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
         usbBroadcastReceiver.register(this,filter);
         wifiBaseManager = new WifiBaseManager(getApplicationContext(), new WifiBaseManager.OnWifiConnectListener() {
             @Override
