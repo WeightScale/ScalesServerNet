@@ -22,10 +22,7 @@ import android.util.Log;
 import com.felhr.usbserial.UsbSerialDevice;
 import com.felhr.usbserial.UsbSerialInterface;
 import com.felhr.usbserial.UsbSerialInterface.UsbReadCallback;
-import com.kostya.scales_server_net.ActivityScales;
-import com.kostya.scales_server_net.Main;
-import com.kostya.scales_server_net.R;
-import com.kostya.scales_server_net.WifiBaseManager;
+import com.kostya.scales_server_net.*;
 import com.kostya.scales_server_net.provider.EventsTable;
 import com.kostya.scales_server_net.provider.SystemTable;
 import com.kostya.scales_server_net.settings.ActivityPreferencesAdmin;
@@ -47,6 +44,7 @@ public class ServiceScalesNet extends Service{
     private UsbSerialDevice serialPort;
     private DataTransferringManager dataTransferringManager;
     private WifiBaseManager wifiBaseManager;
+    private BluetoothBaseManager bluetoothBaseManager;
     private EventsTable eventsTable;
     private int usbDeviceId;
     private static final String TAG = ServiceScalesNet.class.getName();
@@ -86,6 +84,15 @@ public class ServiceScalesNet extends Service{
             @Override
             public void onDisconnect() {startDataTransferring();}
         });
+        try {
+            /** Запускаем bluetooth на время */
+            bluetoothBaseManager = new BluetoothBaseManager(getApplicationContext());
+            bluetoothBaseManager.start();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+           //// TODO: 05.07.2016 не запустился ,bluetooth.
+        }
+
     }
 
     @Override
@@ -130,6 +137,7 @@ public class ServiceScalesNet extends Service{
         executorService.shutdown();
         if (serialPort != null)
             serialPort.close();
+        bluetoothBaseManager.stop();
         stopSelf();
     }
 
