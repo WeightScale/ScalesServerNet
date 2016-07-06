@@ -558,10 +558,7 @@ public class ActivityPreferencesAdmin extends PreferenceActivity implements Shar
         private interface OnChooserFileListener{
             void onChoose(String path);
         }
-        EnumPreferenceAdmin(int key){
-            resId = key;
-
-        }
+        EnumPreferenceAdmin(int key){resId = key;}
         public int getResId() { return resId; }
     }
 

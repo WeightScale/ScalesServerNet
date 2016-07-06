@@ -80,6 +80,6 @@
                 <action android:name="android.intent.action.REBOOT"/>
             </intent-filter>
         </receiver>
-        <provider android:authorities="com.kostya.scaleswifinet.scalesWifiNet" android:exported="false" android:name=".provider.ScalesWiFiNetProvider"/>
+        <provider android:authorities="com.kostya.scales_server_net.serverScalesNet" android:exported="false" android:name=".provider.ServerScalesNetProvider"/>
     </application>
 </manifest>

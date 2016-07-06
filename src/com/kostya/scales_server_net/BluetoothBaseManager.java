@@ -29,7 +29,7 @@ public class BluetoothBaseManager {
     private final Handler handler = new Handler();
     private AcceptThread acceptThread;
     private Timer bluetoothTimeout;
-    private static final int TIMEOUT_BLUETOOTH = 600000; /** Время для таймера выключения bluetooth. */
+    private static final int TIMEOUT_BLUETOOTH = 600000; /** Время с милисекундах для таймера выключения bluetooth. */
     private static final UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private static  final String NAME = "ServerScales";
     private static final String TAG = BluetoothBaseManager.class.getName();
@@ -102,15 +102,15 @@ public class BluetoothBaseManager {
      * Класс процесса Bluetooth Accept.
      */
     private class AcceptThread extends Thread {
-        private final BluetoothServerSocket mmServerSocket;
+        private BluetoothServerSocket mmServerSocket;
         private boolean isClosedSocket = false;
 
         public AcceptThread() {
-            BluetoothServerSocket tmp = null;
+            /*BluetoothServerSocket tmp = null;
             try {
                 tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, uuid);
             } catch (IOException e) { }
-            mmServerSocket = tmp;
+            mmServerSocket = tmp;*/
         }
 
         public void run() {
@@ -118,6 +118,7 @@ public class BluetoothBaseManager {
             /** Пока процесс не прерван. */
             while (!Thread.currentThread().isInterrupted()) {
                 try {
+                    mmServerSocket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, uuid);
                     socket = mmServerSocket.accept(10000);
                     if (socket != null) {
                         /** Процедура обработки приема и отправки данных. */
@@ -125,6 +126,11 @@ public class BluetoothBaseManager {
                     }
                 } catch (Exception e) {
                     Log.d(TAG, e.getMessage());
+                }
+                try {
+                    mmServerSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
             /** Закрываем socket  */
@@ -153,26 +159,33 @@ public class BluetoothBaseManager {
          * @throws Exception Исключение если ошибка.
          */
         private void processInputInputOutputBuffers(BluetoothSocket socket) throws Exception {
-
-            InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream());
-            inputBufferedReader = new BufferedReader(inputStreamReader);
+            Commands.setContext(mContext);
+            inputBufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            outputPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             /** Пока socket не разорван. */
             while (!isClosedSocket){
                 /** Если данные готовы для чтения. */
                 if (inputBufferedReader.ready()){
                     String inputLine = inputBufferedReader.readLine();
                     if (inputLine != null){
-                        Log.d(TAG, "Received message : " + inputLine);
-                        outputPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-                        outputPrintWriter.println("ServerScales");
+                        /** Выполняем принятую команду. */
+                        Commands commands = Commands.execute(inputLine);
+                        if (commands != null){
+                            Log.d(TAG, "Received message : " + commands.getName());
+                            /** Ответ на команду. */
+                            outputPrintWriter.println(commands.getData());
+                        }
                     }
                 }
                 Thread.sleep(10);
             }
             /** Закрываем при разрыве socket */
-            inputBufferedReader.close();
-            outputPrintWriter.close();
-            socket.close();
+            try { inputBufferedReader.close(); }catch (Exception e){}
+            try {outputPrintWriter.close(); }catch (Exception e){}
+            try {socket.close();}catch (Exception e){}
+
+
+
         }
 
     }

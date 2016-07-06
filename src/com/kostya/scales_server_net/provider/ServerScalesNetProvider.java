@@ -15,11 +15,11 @@ import android.text.TextUtils;
  * Date: 21.06.16
  * @author Kostya
  */
-public class ScalesWiFiNetProvider extends ContentProvider {
+public class ServerScalesNetProvider extends ContentProvider {
 
-    private static final String DATABASE_NAME = "scalesWifiNet.db";
+    private static final String DATABASE_NAME = "serverScalesNet.db";
     private static final int DATABASE_VERSION = 1;
-    protected static final String AUTHORITY = "com.kostya.scaleswifinet.scalesWifiNet";
+    protected static final String AUTHORITY = "com.kostya.scales_server_net.serverScalesNet";
     private static final String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS ";
 
     private static final int ALL_ROWS = 1;
