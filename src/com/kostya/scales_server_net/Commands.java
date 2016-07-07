@@ -15,8 +15,8 @@ public enum  Commands {
         }
 
         @Override
-        void fetch() {
-            data = "ServerScales";
+        String fetch() {
+            return "ServerScales";
         }
     },
     /** Имя конкретной сети WiFi. */
@@ -27,11 +27,11 @@ public enum  Commands {
         }
 
         @Override
-        void fetch() {
+        String fetch() {
             try {
-                data = new SystemTable(getContext()).getProperty(SystemTable.Name.WIFI_SSID);
+                return new SystemTable(getContext()).getProperty(SystemTable.Name.WIFI_SSID);
             } catch (Exception e) {
-                data = e.getMessage();
+                return e.getMessage();
             }
         }
     },
@@ -43,22 +43,25 @@ public enum  Commands {
         }
 
         @Override
-        void fetch() {
+        String fetch() {
             try {
-                data = new SystemTable(getContext()).getProperty(SystemTable.Name.WIFI_KEY);
+                return new SystemTable(getContext()).getProperty(SystemTable.Name.WIFI_KEY);
             } catch (Exception e) {
-                data = e.getMessage();
+                return e.getMessage();
             }
         }
     };
 
     private static Context context;
     private final String name;
+    private static String command;
 
     private static String data;
     abstract void setup(String d);
-    abstract void fetch();
+    abstract String fetch();
     Commands(String name) {this.name = name;}
+
+    public String toString() { return command; }
 
     private static Commands contains(String s){
         for(Commands choice : values())
@@ -72,8 +75,9 @@ public enum  Commands {
         try {
             Commands cmd = contains(inputLine);
             String sub = inputLine.replace(cmd.name, "");
+            command = cmd.getName();
             if (sub.isEmpty())
-                cmd.fetch();
+                command += cmd.fetch();
             else
                 cmd.setup(sub);
             return cmd;

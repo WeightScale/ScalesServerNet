@@ -6,12 +6,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -56,6 +58,7 @@ public class BluetoothBaseManager {
         broadcastReceiverBluetooth = new BroadcastReceiverBluetooth();
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        intentFilter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
         mContext.registerReceiver(broadcastReceiverBluetooth, intentFilter);
     }
 
@@ -173,7 +176,7 @@ public class BluetoothBaseManager {
                         if (commands != null){
                             Log.d(TAG, "Received message : " + commands.getName());
                             /** Ответ на команду. */
-                            outputPrintWriter.println(commands.getData());
+                            outputPrintWriter.println(commands.toString());
                         }
                     }
                 }
@@ -207,6 +210,44 @@ public class BluetoothBaseManager {
                     case BluetoothDevice.ACTION_ACL_DISCONNECTED:
                         acceptThread.setClosedSocket(true);
                         Log.d(TAG, action);
+                        break;
+                    case BluetoothDevice.ACTION_PAIRING_REQUEST:
+                        try {
+                            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                            try {
+                                byte[] pin = (byte[]) BluetoothDevice.class.getMethod("convertPinToBytes", String.class).invoke(BluetoothDevice.class, "1234");
+                                Method m = device.getClass().getMethod("setPin", byte[].class);
+                                m.invoke(device, pin);
+                                device.getClass().getMethod("setPairingConfirmation", boolean.class).invoke(device, true);
+                            }
+                            catch(Exception e){}
+
+                            /*device.getClass().getMethod("setPairingConfirmation", boolean.class).invoke(device, true);
+                            device.getClass().getMethod("cancelPairingUserInput", boolean.class).invoke(device);*/
+
+                            /*int pin=intent.getIntExtra(BluetoothDevice.EXTRA_PAIRING_KEY, 1234);
+                            int vpin = intent.getIntExtra(BluetoothDevice.EXTRA_PAIRING_VARIANT, 0);
+                            //the pin in case you need to accept for an specific pin
+                            Log.d("PIN", " " + intent.getIntExtra("android.bluetooth.device.extra.PAIRING_KEY",0));
+                            //maybe you look for a name or address
+                            Log.d("Bonded", device.getName());
+                            byte[] pinBytes;
+                            pinBytes = (""+pin).getBytes("UTF-8");
+                            device.setPin(pinBytes);
+                            //setPairing confirmation if neeeded
+                            device.setPairingConfirmation(false);*/
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            dev.setPairingConfirmation(true);
+                            //successfull pairing
+                        } else {
+                            Log.d(TAG, action);
+                            //impossible to automatically perform pairing,
+                           */ //your Android version is below KITKAT
                         break;
                     default:
                 }
