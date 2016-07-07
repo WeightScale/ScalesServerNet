@@ -122,6 +122,12 @@ public class BluetoothBaseManager {
                     socket = mmServerSocket.accept(10000);
                     if (socket != null) {
                         /** Процедура обработки приема и отправки данных. */
+                        // ViktYusk
+                        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+                        String cmd1 = br.readLine();
+                        String cmd2 = br.readLine();
+                        
+                        //
                         processInputInputOutputBuffers(socket);
                     }
                 } catch (Exception e) {

@@ -3,6 +3,7 @@ package com.kostya.scales_server_net;
 
 import android.content.Context;
 import com.kostya.scales_server_net.provider.SystemTable;
+import com.kostya.scales_server_net.settings.Preferences;
 
 /**
  * @author Kostya Created by Kostya on 06.07.2016.
@@ -24,6 +25,7 @@ public enum  Commands {
         @Override
         void setup(String d){
             new SystemTable(getContext()).updateEntry(SystemTable.Name.WIFI_SSID, d);
+            Globals.getInstance().getPreferencesScales().write("key_wifi_ssid", data);
         }
 
         @Override
@@ -40,6 +42,7 @@ public enum  Commands {
         @Override
         void setup(String data){
             new SystemTable(getContext()).updateEntry(SystemTable.Name.WIFI_KEY, data);
+            Globals.getInstance().getPreferencesScales().write("key_wifi_key", data);
         }
 
         @Override

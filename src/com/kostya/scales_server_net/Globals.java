@@ -40,6 +40,8 @@ public class Globals {
             packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
             versionNumber = packageInfo.versionCode;
             versionName = packageInfo.versionName;
+
+            preferencesScales = new Preferences(context);
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, e.getMessage());
         }
