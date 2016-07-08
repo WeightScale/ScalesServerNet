@@ -24,8 +24,8 @@ public enum  Commands {
     CMD_SSID_NET("SSID"){
         @Override
         void setup(String d){
+            Globals.getInstance().getPreferencesScales().write("key_wifi_ssid", d);
             new SystemTable(getContext()).updateEntry(SystemTable.Name.WIFI_SSID, d);
-            Globals.getInstance().getPreferencesScales().write("key_wifi_ssid", data);
         }
 
         @Override
@@ -41,8 +41,8 @@ public enum  Commands {
     CMD_PASS_NET("PASS"){
         @Override
         void setup(String data){
-            new SystemTable(getContext()).updateEntry(SystemTable.Name.WIFI_KEY, data);
             Globals.getInstance().getPreferencesScales().write("key_wifi_key", data);
+            new SystemTable(getContext()).updateEntry(SystemTable.Name.WIFI_KEY, data);
         }
 
         @Override
