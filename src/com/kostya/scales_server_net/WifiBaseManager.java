@@ -47,13 +47,6 @@ public class WifiBaseManager  {
         eventsTable = new EventsTable(context);
         internet = new Internet(context);
         SystemTable systemTable = new SystemTable(context);
-        try {
-            ssid = systemTable.getProperty(SystemTable.Name.WIFI_SSID);
-            pass = systemTable.getProperty(SystemTable.Name.WIFI_KEY);
-            //int storeIdNet = Integer.valueOf(systemTable.getProperty(SystemTable.Name.WIFI_DEFAULT));
-        } catch (Exception e) {
-            eventsTable.insertNewEvent(e.getMessage(), EventsTable.Event.WIFI_EVENT);
-        }
         BaseReceiver baseReceiver = new BaseReceiver();
         IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
         baseReceiver.register(context, intentFilter);
@@ -80,6 +73,12 @@ public class WifiBaseManager  {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        try {
+            ssid = new SystemTable(context).getProperty(SystemTable.Name.WIFI_SSID);
+            pass = new SystemTable(context).getProperty(SystemTable.Name.WIFI_KEY);
+        } catch (Exception e) {
+            eventsTable.insertNewEvent(e.getMessage(), EventsTable.Event.WIFI_EVENT);
+        }
         try {
             /** Проверяем сеть на соединение и имя конкретной сети.
              * Если верно то вызываем обратный вызов  и запускаем приемник на событие disconnect.  */

@@ -94,7 +94,7 @@ public class DataTransferringManager {
                 serverThreadProcessor.startServerProcessorThread(context);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //// TODO: 09.07.2016  
         }
     }
 
@@ -103,7 +103,7 @@ public class DataTransferringManager {
             try {
                 jmdns.registerService(serviceInfo);
             } catch (IOException e) {
-                e.printStackTrace();
+                //// TODO: 09.07.2016  
             }
     }
 
@@ -123,7 +123,7 @@ public class DataTransferringManager {
             try {
                 jmdns.close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //// TODO: 09.07.2016  
             }
 
             jmdns = null;
@@ -182,11 +182,12 @@ public class DataTransferringManager {
 
             Set<String> ipAddressesSet = getNeighborDevicesIpAddressesSet(context);
             for (String serverIpAddress : ipAddressesSet) {
-                ClientProcessor clientProcessor = new ClientProcessor(serverIpAddress, context);
+                //ClientProcessor clientProcessor = new ClientProcessor(serverIpAddress, context);
                 executorService.execute(new Runnable() {
                     @Override
                     public void run() {
-                        clientProcessor.sendSimpleMessageToOtherDevice(message);
+                        new ClientProcessor(message, serverIpAddress, context);
+                        //clientProcessor.sendSimpleMessageToOtherDevice(message);
                     }
                 });
             }
@@ -231,12 +232,12 @@ public class DataTransferringManager {
                                 onlineDevices.add(ip);
                         }
                     } catch (NullPointerException e) {
-                        e.printStackTrace();
+                        //// TODO: 09.07.2016  
                     }
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //// TODO: 09.07.2016  
         }
 
         return onlineDevices;

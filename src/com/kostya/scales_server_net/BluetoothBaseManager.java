@@ -1,23 +1,20 @@
 package com.kostya.scales_server_net;
 
-import android.app.ProgressDialog;
 import android.bluetooth.*;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+
+import com.kostya.scales_server_net.Command.Commands;
 
 /**
  * @author Kostya Created by Kostya on 04.07.2016.
@@ -128,12 +125,12 @@ public class BluetoothBaseManager {
                         processInputInputOutputBuffers(socket);
                     }
                 } catch (Exception e) {
-                    Log.d(TAG, e.getMessage());
+                    //Log.d(TAG, e.getMessage());
                 }
                 try {
                     mmServerSocket.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //// TODO: 09.07.2016  
                 }
             }
             /** Закрываем socket  */
@@ -162,7 +159,8 @@ public class BluetoothBaseManager {
          * @throws Exception Исключение если ошибка.
          */
         private void processInputInputOutputBuffers(BluetoothSocket socket) throws Exception {
-            Commands.setContext(mContext);
+            //Commands1.setContext(mContext);
+            Command command = new Command(mContext);
             inputBufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             outputPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             /** Пока socket не разорван. */
@@ -172,11 +170,11 @@ public class BluetoothBaseManager {
                     String inputLine = inputBufferedReader.readLine();
                     if (inputLine != null){
                         /** Выполняем принятую команду. */
-                        Commands commands = Commands.execute(inputLine);
-                        if (commands != null){
-                            Log.d(TAG, "Received message : " + commands.getName());
+                        Commands cmd = command.execute(inputLine);
+                        if (cmd != null){
+                            Log.d(TAG, "Received message : " + cmd.getName());
                             /** Ответ на команду. */
-                            outputPrintWriter.println(commands.toString());
+                            outputPrintWriter.println(cmd.toString());
                         }
                     }
                 }
@@ -238,7 +236,7 @@ public class BluetoothBaseManager {
                             //setPairing confirmation if neeeded
                             device.setPairingConfirmation(false);*/
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            //// TODO: 09.07.2016  
                         }
 
                         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

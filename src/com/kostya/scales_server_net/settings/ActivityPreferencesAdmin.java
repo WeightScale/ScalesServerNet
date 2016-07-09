@@ -25,6 +25,7 @@ import android.widget.*;
 import com.google.common.io.ByteStreams;
 import com.kostya.scales_server_net.Globals;
 import com.kostya.scales_server_net.R;
+import com.kostya.scales_server_net.filedialog.FileChooserDialog;
 import com.kostya.scales_server_net.provider.SenderTable;
 import com.kostya.scales_server_net.provider.SystemTable;
 import com.kostya.scales_server_net.service.ServiceScalesNet;
@@ -495,10 +496,10 @@ public class ActivityPreferencesAdmin extends PreferenceActivity implements Shar
             }
         },
         PATH_FILE_FORM(R.string.KEY_PATH_FORM){
-
+            Context mContext;
             @Override
             void setup(Preference name) throws Exception {
-                Context mContext = name.getContext();
+                mContext = name.getContext();
                 name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
@@ -508,8 +509,42 @@ public class ActivityPreferencesAdmin extends PreferenceActivity implements Shar
                 });
             }
             public void showFileChooser(Context context) {
-                Intent intent = new Intent();
-                //intent.setType("*/*");
+                FileChooserDialog dialog = new FileChooserDialog(context);
+                dialog.addListener(new FileChooserDialog.OnFileSelectedListener() {
+                    @Override
+                    public void onFileSelected(Dialog source, File file) {
+                        source.hide();
+                        /** Получаем путь к файлу. */
+                        Uri uri = Uri.fromFile(file);
+                        /** Создаем фаил с именем . */
+                        File storeFile = new File(Globals.getInstance().pathLocalForms, "form.xml");
+                        try {
+                            /** Создаем поток для записи фаила в папку хранения. */
+                            FileOutputStream fileOutputStream = new FileOutputStream(storeFile);
+                            InputStream inputStream = mContext.getContentResolver().openInputStream(uri);
+                            /** Получаем байты данных. */
+                            byte[] bytes = ByteStreams.toByteArray(inputStream);
+                            inputStream.close();
+                            /** Записываем фаил в папку. */
+                            fileOutputStream.write(bytes);
+                            /** Закрываем поток. */
+                            fileOutputStream.close();
+                            Toast.makeText(mContext, "Фаил сохранен " + file.getPath(),  Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(mContext, "Ошибка выбота файла " + e.getMessage(),  Toast.LENGTH_LONG).show();
+                        }
+                        systemTable.updateEntry(SystemTable.Name.PATH_FORM, uri.toString());
+                    }
+                    @Override
+                    public void onFileSelected(Dialog source, File folder, String name) {
+                        source.hide();
+                        Toast toast = Toast.makeText(mContext, "File created: " + folder.getName() + "/" + name, Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                });
+                dialog.show();
+                /*Intent intent = new Intent();
+                //intent.setType("**//*//*");
                 //intent.addCategory(Intent.CATEGORY_OPENABLE);
                 if (Build.VERSION.SDK_INT < 19){
                     intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -520,13 +555,13 @@ public class ActivityPreferencesAdmin extends PreferenceActivity implements Shar
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     //((Activity)context).startActivityForResult(intent, FILE_SELECT_CODE);
                 }
-                intent.setType("*/*");
+                intent.setType("**//*//*");
 
                 try {
                     ((Activity)context).startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), FILE_SELECT_CODE);
                 } catch (ActivityNotFoundException ex) {
                     Toast.makeText(context, "Пожалуйста инсталируйте File Manager.",  Toast.LENGTH_LONG).show();
-                }
+                }*/
             }
         },
         SERVICE_COD(R.string.KEY_SERVICE_COD){

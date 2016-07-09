@@ -10,7 +10,7 @@ import java.net.Socket;
 
 public class ServerSocketProcessorRunnable implements Runnable {
 
-    public static final int SERVER_PORT = 8700;//8700
+    public static final int SERVER_PORT = 8700;
     private ServerSocket serverSocket;
     private final Context context;
     private BufferedReader inputBufferedReader;
@@ -32,7 +32,7 @@ public class ServerSocketProcessorRunnable implements Runnable {
             //serverSocket = new ServerSocket(SERVER_PORT);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            //// TODO: 09.07.2016  
         }
 
 

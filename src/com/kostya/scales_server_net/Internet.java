@@ -164,7 +164,7 @@ public class Internet {
                     try {
                         dataMtd = ConnectivityManager.class.getDeclaredMethod("setMobileDataEnabled", boolean.class);
                     } catch (SecurityException | NoSuchMethodException e) {
-                        e.printStackTrace();
+                        //// TODO: 09.07.2016  
                     }
 
                     assert dataMtd != null;
@@ -172,7 +172,7 @@ public class Internet {
                     try {
                         dataMtd.invoke(dataManager, on);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        //// TODO: 09.07.2016  
                     }
                 }
                 return true;

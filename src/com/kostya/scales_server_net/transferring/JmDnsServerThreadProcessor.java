@@ -28,7 +28,7 @@ public class JmDnsServerThreadProcessor {
                 serverProcessorThread.interrupt();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            //// TODO: 09.07.2016  
         }
     }
 

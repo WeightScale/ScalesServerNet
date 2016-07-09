@@ -326,7 +326,7 @@ public abstract class GoogleSpreadsheets extends AsyncTask<Void, Void, String[]>
             }
 
         } catch (BatchInterruptedException e) {
-            e.printStackTrace();
+            //// TODO: 09.07.2016  
         } catch (ServiceException e) {
             try {
                 worksheet.delete();
@@ -355,7 +355,7 @@ public abstract class GoogleSpreadsheets extends AsyncTask<Void, Void, String[]>
             queryBatchResponse = ssSvc.batch(new URL(cellFeed.getLink(ILink.Rel.FEED_BATCH, ILink.Type.ATOM).getHref()), batchRequest);
 
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            //// TODO: 09.07.2016  
         } catch (IOException e) {
             throw new ServiceException("Ошибка " + e);
         }

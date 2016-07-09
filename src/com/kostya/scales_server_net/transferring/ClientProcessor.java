@@ -10,16 +10,15 @@ import java.net.Socket;
 
 public class ClientProcessor {
     private Socket socket;
-    private String textForSend;
     private final Context context;
     private final String serverIpAddress;
+    private static final int TIME_OUT_CONNECT = 500; /** Время в милисекундах. */
     private static  final String TAG = "ClientProcess";
 
     public ClientProcessor(String textForSend, String serverIpAddress, Context context) {
-        this.textForSend = textForSend;
         this.context = context;
         this.serverIpAddress = serverIpAddress;
-
+        sendSimpleMessageToOtherDevice(textForSend);
     }
 
     public ClientProcessor(String serverIpAddress, Context context) {
@@ -27,15 +26,12 @@ public class ClientProcessor {
         this.serverIpAddress = serverIpAddress;
     }
 
-    private Socket getSocket(String serverIpAddress) {
+    private Socket getSocket(String serverIpAddress) throws Exception {
         try {
-            InetAddress serverAddress = InetAddress.getByName(serverIpAddress);
             socket = new Socket();
-            socket.connect(new InetSocketAddress(serverAddress, ServerSocketProcessorRunnable.SERVER_PORT), 500);
-
-            //socket = new Socket(serverAddress, ServerSocketProcessorRunnable.SERVER_PORT);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+            socket.connect(new InetSocketAddress(InetAddress.getByName(serverIpAddress), ServerSocketProcessorRunnable.SERVER_PORT), TIME_OUT_CONNECT);
+        } catch (IOException e) {
+            throw new Exception(e.getMessage());
         }
         return socket;
     }
@@ -44,9 +40,7 @@ public class ClientProcessor {
         try {
             if (socket != null && !socket.isClosed())
                 socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
     }
 
 
@@ -69,7 +63,7 @@ public class ClientProcessor {
             socket.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            //// TODO: 09.07.2016  
             Log.i(TAG,e.getMessage());
 
         } finally {
@@ -83,17 +77,12 @@ public class ClientProcessor {
 
             PrintWriter output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             output.println(message);
-            output.flush();
-
-            //BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            //String messageFromClient = input.readLine();
-            //Log.i(TAG,"Received answer : " + messageFromClient);
 
             output.close();
             socket.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            //// TODO: 09.07.2016  
             Log.i(TAG,e.getMessage());
 
         } finally {

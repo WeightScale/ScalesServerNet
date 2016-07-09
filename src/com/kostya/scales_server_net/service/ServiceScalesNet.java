@@ -26,6 +26,7 @@ import com.kostya.scales_server_net.*;
 import com.kostya.scales_server_net.provider.EventsTable;
 import com.kostya.scales_server_net.provider.SystemTable;
 import com.kostya.scales_server_net.settings.ActivityPreferencesAdmin;
+import com.kostya.scales_server_net.terminals.Terminals;
 import com.kostya.scales_server_net.transferring.DataTransferringManager;
 
 import java.util.*;
@@ -42,10 +43,12 @@ public class ServiceScalesNet extends Service{
     private final UsbBroadcastReceiver usbBroadcastReceiver = new UsbBroadcastReceiver();
     private UsbManager usbManager;
     private UsbSerialDevice serialPort;
+    private Command commandUsb;
     private DataTransferringManager dataTransferringManager;
     private WifiBaseManager wifiBaseManager;
     private BluetoothBaseManager bluetoothBaseManager;
     private EventsTable eventsTable;
+    private Terminals terminals = Terminals.DEFAULT;
     private int usbDeviceId;
     private static final String TAG = ServiceScalesNet.class.getName();
     public static final String ACTION_USB_PERMISSION = "com.kostya.scaleswifinet.USB_PERMISSION";
@@ -237,6 +240,7 @@ public class ServiceScalesNet extends Service{
                     serialPort.setParity(portProperties.getParity()); //serialPort.setParity(UsbSerialInterface.PARITY_NONE);           /** Бит четности. */
                     serialPort.setFlowControl(portProperties.getFlowControl()); //serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF); /** Флов контроль. */
                     serialPort.read(mCallback);
+                    commandUsb = new Command(getApplicationContext(), interfaceCommandsUsb);
                     setNotifyContentText("COM порт открыт");
                     eventsTable.insertNewEvent("Весы соеденены", EventsTable.Event.USB_EVENT);
                 } else {
@@ -284,17 +288,29 @@ public class ServiceScalesNet extends Service{
         }
     }
 
+    private final Command.InterfaceCommands interfaceCommandsUsb = new Command.InterfaceCommands() {
+        @Override
+        public String command(Command.Commands commands) {
+            dataTransferringManager.sendMessageToAllDevicesInNetwork(getBaseContext(), commands.toString());
+            return commands.getName();
+        }
+    };
+
+
+    /**
+     * Обратный вызов когда пришли данные с usb.
+     */
     private final UsbReadCallback mCallback = new UsbReadCallback() { //Defining a Callback which triggers whenever data is read.
 
         @Override
         public void onReceivedData(byte[] arg0) {
             try {
-                String data = new String(arg0, "UTF-8");
-                data.concat("\n").concat("\r");
-
+                /** Фильтруем данные через класс терминала. */
+                String data = terminals.filter(new String(arg0, "UTF-8")) ;
+                //data.concat("\n").concat("\r");
                 sendBroadcast(new Intent(ActivityScales.WEIGHT).putExtra("weight", data));
                 sendNotifySubText(data);
-                dataTransferringManager.sendMessageToAllDevicesInNetwork(getBaseContext(), data);
+                commandUsb.setData(Command.Commands.OUT_USB_PORT, data);
                 executorService.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -302,7 +318,7 @@ public class ServiceScalesNet extends Service{
                     }
                 });
             } catch (Exception e){
-                e.printStackTrace();
+                // TODO: 08.07.2016
             }
         }
     };
@@ -342,6 +358,9 @@ public class ServiceScalesNet extends Service{
         notificationManager.notify(DEFAULT_NOTIFICATION_ID, builder.build());
     }
 
+    /**
+     * Класс для настроек COM порта (USB).
+     */
     private static class PortProperties{
         private final SystemTable systemTable;
         int speed;
