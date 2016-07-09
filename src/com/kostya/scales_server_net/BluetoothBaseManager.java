@@ -37,6 +37,7 @@ public class BluetoothBaseManager {
 
     public BluetoothBaseManager(Context context) throws Exception {
         mContext = context;
+        Commands.setContext(mContext);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBluetoothAdapter == null)
             throw new Exception("Bluetooth adapter missing");
@@ -53,6 +54,7 @@ public class BluetoothBaseManager {
         if(flagTimeout)
             throw new Exception("Timeout enabled bluetooth");
         /** Приемник событий bluetooth*/
+        mBluetoothAdapter.setName(NAME);
         broadcastReceiverBluetooth = new BroadcastReceiverBluetooth();
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
@@ -166,7 +168,7 @@ public class BluetoothBaseManager {
          * @throws Exception Исключение если ошибка.
          */
         private void processInputInputOutputBuffers(BluetoothSocket socket) throws Exception {
-            Commands.setContext(mContext);
+
             inputBufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             outputPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             /** Пока socket не разорван. */
