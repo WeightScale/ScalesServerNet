@@ -26,6 +26,12 @@ public class ClientProcessor {
         this.serverIpAddress = serverIpAddress;
     }
 
+    public ClientProcessor(Object object, String serverIpAddress, Context context) {
+        this.context = context;
+        this.serverIpAddress = serverIpAddress;
+        sendSimpleObjectToOtherDevice(object);
+    }
+
     private Socket getSocket(String serverIpAddress) throws Exception {
         try {
             socket = new Socket();
@@ -90,5 +96,22 @@ public class ClientProcessor {
         }
     }
 
+    public void sendSimpleObjectToOtherDevice(Object object) {
+        try {
+            socket = getSocket(serverIpAddress);
 
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            out.writeObject(object);
+
+            out.close();
+            socket.close();
+
+        } catch (Exception e) {
+            //// TODO: 09.07.2016
+            Log.i(TAG,e.getMessage());
+
+        } finally {
+            closeSocket(socket);
+        }
+    }
 }

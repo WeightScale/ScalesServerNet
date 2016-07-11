@@ -14,7 +14,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-import com.kostya.scales_server_net.Command.Commands;
+import com.kostya.serializable.Command;
+import com.kostya.serializable.CommandObject;
+import com.kostya.serializable.Commands;
 
 /**
  * @author Kostya Created by Kostya on 04.07.2016.
@@ -23,8 +25,10 @@ public class BluetoothBaseManager {
     Context mContext;
     private BroadcastReceiverBluetooth broadcastReceiverBluetooth;
     private BluetoothAdapter mBluetoothAdapter;
-    private BufferedReader inputBufferedReader;
-    private PrintWriter outputPrintWriter;
+    //private BufferedReader inputBufferedReader;
+    //private PrintWriter outputPrintWriter;
+    private ObjectInputStream objectInputStream;
+    private ObjectOutputStream objectOutputStream;
     private final Handler handler = new Handler();
     private AcceptThread acceptThread;
     private Timer bluetoothTimeout;
@@ -86,9 +90,11 @@ public class BluetoothBaseManager {
         if (acceptThread != null)
             acceptThread.cancel();
 
-        try {inputBufferedReader.close();} catch (Exception e) { }
+        //try {inputBufferedReader.close();} catch (Exception e) { }
+        //try {outputPrintWriter.close();} catch (Exception e) { }
 
-        try {outputPrintWriter.close();} catch (Exception e) { }
+        try {objectInputStream.close();} catch (Exception e) { }
+        try {objectOutputStream.close();} catch (Exception e) { }
 
         if (acceptThread != null)
             acceptThread.interrupt();
@@ -161,28 +167,47 @@ public class BluetoothBaseManager {
         private void processInputInputOutputBuffers(BluetoothSocket socket) throws Exception {
             //Commands1.setContext(mContext);
             Command command = new Command(mContext);
-            inputBufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            outputPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+            //inputBufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            //outputPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            objectOutputStream.flush();
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
             /** Пока socket не разорван. */
             while (!isClosedSocket){
                 /** Если данные готовы для чтения. */
-                if (inputBufferedReader.ready()){
+                /*if (inputBufferedReader.ready()){
                     String inputLine = inputBufferedReader.readLine();
                     if (inputLine != null){
-                        /** Выполняем принятую команду. */
+                        *//** Выполняем принятую команду. *//*
                         Commands cmd = command.execute(inputLine);
                         if (cmd != null){
                             Log.d(TAG, "Received message : " + cmd.getName());
-                            /** Ответ на команду. */
+                            *//** Ответ на команду. *//*
                             outputPrintWriter.println(cmd.toString());
                         }
                     }
+                }*/
+
+                CommandObject object = (CommandObject) objectInputStream.readObject();
+                if (object != null){
+                    /** Выполняем принятую команду. */
+                    CommandObject response = object.execute(mContext);
+                    if (response != null){
+                        Log.d(TAG, "Received message : " + response.toString());
+                        /** Ответ на команду. */
+                        objectOutputStream.writeObject(response);
+                        objectOutputStream.flush();
+                    }
                 }
+
+
                 Thread.sleep(10);
             }
             /** Закрываем при разрыве socket */
-            try { inputBufferedReader.close(); }catch (Exception e){}
-            try {outputPrintWriter.close(); }catch (Exception e){}
+            //try { inputBufferedReader.close(); }catch (Exception e){}
+            //try {outputPrintWriter.close(); }catch (Exception e){}
+            try { objectInputStream.close(); }catch (Exception e){}
+            try {objectOutputStream.close(); }catch (Exception e){}
             try {socket.close();}catch (Exception e){}
 
 

@@ -22,8 +22,8 @@ public class DataTransferringManager {
 
     public static final int SERVICE_INFO_PORT = 8856;//8856
     public static final String SERVICE_INFO_TYPE_SCALES = "_scales._tcp.local.";
-    public static final String SERVICE_INFO_TYPE_SETTINGS = "_settings._tcp.local.";
-    public static final String SERVICE_INFO_NAME = "scales_wifi_service";
+    public static final String SERVICE_INFO_NAME_CLIENT = "ScalesClient";
+    public static final String SERVICE_INFO_NAME_SERVER = "ScalesServer";
     private static final String SERVICE_INFO_PROPERTY_IP_VERSION = "ipv4";
     private static final String SERVICE_INFO_PROPERTY_DEVICE = "device";
     private static final String TAG = DataTransferringManager.class.getName();
@@ -89,7 +89,7 @@ public class DataTransferringManager {
                     }
                 });
                 Hashtable<String, String> settings = setSettingsHashTable(context);
-                serviceInfo = ServiceInfo.create(serviceType, SERVICE_INFO_NAME , SERVICE_INFO_PORT, 0, 0, true, settings);
+                serviceInfo = ServiceInfo.create(serviceType, SERVICE_INFO_NAME_SERVER , SERVICE_INFO_PORT, 0, 0, true, settings);
                 jmdns.registerService(serviceInfo);
                 serverThreadProcessor.startServerProcessorThread(context);
             }
@@ -174,6 +174,24 @@ public class DataTransferringManager {
         return serviceInfo.getPropertyString(SERVICE_INFO_PROPERTY_IP_VERSION);
     }
 
+    public void sendObjectToAllDevicesInNetwork(final Context context, Object object){
+        if (jmdns != null) {
+
+            if (executorService.isShutdown())
+                executorService = Executors.newCachedThreadPool();
+
+            Set<String> ipAddressesSet = getNeighborDevicesIpAddressesSet(context);
+            for (String serverIpAddress : ipAddressesSet) {
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        new ClientProcessor(object, serverIpAddress, context);
+                    }
+                });
+            }
+        }
+    }
+
     public void sendMessageToAllDevicesInNetwork(final Context context, String message){
         if (jmdns != null) {
 
@@ -182,12 +200,10 @@ public class DataTransferringManager {
 
             Set<String> ipAddressesSet = getNeighborDevicesIpAddressesSet(context);
             for (String serverIpAddress : ipAddressesSet) {
-                //ClientProcessor clientProcessor = new ClientProcessor(serverIpAddress, context);
                 executorService.execute(new Runnable() {
                     @Override
                     public void run() {
                         new ClientProcessor(message, serverIpAddress, context);
-                        //clientProcessor.sendSimpleMessageToOtherDevice(message);
                     }
                 });
             }

@@ -5,19 +5,26 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import com.kostya.scales_server_net.provider.EventsTable;
+import com.kostya.scales_server_net.provider.SystemTable;
 import com.kostya.scales_server_net.settings.Preferences;
+import com.kostya.serializable.ComPortObject;
+import com.kostya.terminals.Terminals;
 
 import java.io.File;
+
+import static com.kostya.serializable.ComPortObject.usbProperties;
 
 /** Created by Kostya on 23.01.2016.
  * @author Kostya
  */
 public class Globals {
     private static Globals instance = new Globals();
+    public Terminals terminal;
     public static File pathLocalForms;
     /** Настройки для весов. */
     protected Preferences preferencesScales;
     protected PackageInfo packageInfo;
+    ComPortObject comPortObject;
     /** Версия программы весового модуля. */
     private final int microSoftware = 4;
     protected String networkOperatorName;
@@ -40,6 +47,11 @@ public class Globals {
             packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
             versionNumber = packageInfo.versionCode;
             versionName = packageInfo.versionName;
+            try {
+                terminal = Terminals.values()[Integer.valueOf(new SystemTable(context).getProperty(SystemTable.Name.TERMINAL))];
+            } catch (Exception e) {
+                terminal = Terminals.DEFAULT;
+            }
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -54,6 +66,15 @@ public class Globals {
                 new EventsTable(context).insertNewEvent("Путь не созданый: " + pathLocalForms.getPath(), EventsTable.Event.PATH_STORE);
             }
         }
+
+
+        SystemTable systemTable = new SystemTable(context);
+        comPortObject = new ComPortObject();
+        comPortObject.setSpeed(Integer.valueOf(systemTable.getProperty(SystemTable.Name.SPEED_PORT, "9600")));
+        comPortObject.setDataBits(usbProperties.get(systemTable.getProperty(SystemTable.Name.FRAME_PORT, "8")));
+        comPortObject.setStopBits(usbProperties.get(systemTable.getProperty(SystemTable.Name.STOP_BIT, "1")));
+        comPortObject.setParity(usbProperties.get(systemTable.getProperty(SystemTable.Name.PARITY_BIT, "none")));
+        comPortObject.setFlowControl(usbProperties.get(systemTable.getProperty(SystemTable.Name.FLOW_CONTROL, "OFF")));
 
     }
 
@@ -117,6 +138,5 @@ public class Globals {
 
     public static void setInstance(Globals instance) { Globals.instance = instance; }
 
-
-
+    public ComPortObject getComPortObject() {return comPortObject;}
 }

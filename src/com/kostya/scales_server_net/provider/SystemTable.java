@@ -41,7 +41,8 @@ public class SystemTable {
         WIFI_SSID("wifi_ssid"),
         WIFI_KEY("wifi_key"),
         WIFI_DEFAULT("wifi_default"),
-        PATH_FORM("path_form");
+        PATH_FORM("path_form"),
+        TERMINAL("terminal");
 
         public String getName() { return name; }
 
@@ -168,6 +169,22 @@ public class SystemTable {
             }
         }
         throw new  Exception("Ошибка получения настройки.");
+    }
+
+    /** Получаем настройку по имени.
+     * @param name Имя настройки.
+     * @return Данные настройки.
+     * @throws Exception Исключение ошибка при получении настройки.
+     */
+    public String getProperty(Name name, String defaultValue){
+        Cursor cursor = contentResolver.query(CONTENT_URI, new String[]{KEY_ID,KEY_DATA}, KEY_NAME + "= " + name.ordinal(), null, null);
+        if ((cursor != null ? cursor.getCount() : 0) > 0) {
+            cursor.moveToFirst();
+            if (!cursor.isAfterLast()) {
+                return cursor.getString(cursor.getColumnIndex(KEY_DATA));
+            }
+        }
+        return defaultValue;
     }
 
     /** Добавляем настройки по умолчанию.

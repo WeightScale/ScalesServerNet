@@ -12,7 +12,7 @@ import com.kostya.scales_server_net.transferring.DataTransferringManager;
  * @author Kostya
  */
 public class Main extends Application {
-    private static Main instance = new Main();
+    private static Main instance;
     private DataTransferringManager dataTransferring;
     private DataTransferringManager settingsTransferring;
     private Globals globals;
@@ -23,6 +23,7 @@ public class Main extends Application {
     public void onCreate() {
         super.onCreate();
 
+        instance = this;
         globals = Globals.getInstance();
         globals.initialize(this);
 
@@ -34,7 +35,6 @@ public class Main extends Application {
         }
 
         dataTransferring = new DataTransferringManager(DataTransferringManager.SERVICE_INFO_TYPE_SCALES);
-        settingsTransferring = new DataTransferringManager(DataTransferringManager.SERVICE_INFO_TYPE_SETTINGS);
         startService(new Intent(this,ServiceScalesNet.class));
     }
 
@@ -42,12 +42,6 @@ public class Main extends Application {
         if (dataTransferring == null)
             dataTransferring = new DataTransferringManager(DataTransferringManager.SERVICE_INFO_TYPE_SCALES);
         return dataTransferring;
-    }
-
-    public DataTransferringManager getSettingsTransferring() {
-        if (settingsTransferring == null)
-            settingsTransferring = new DataTransferringManager(DataTransferringManager.SERVICE_INFO_TYPE_SETTINGS);
-        return settingsTransferring;
     }
 
     private void setDeviceId(String deviceId) {

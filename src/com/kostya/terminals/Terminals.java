@@ -1,13 +1,12 @@
-package com.kostya.scales_server_net.terminals;
+package com.kostya.terminals;
 
 import android.util.SparseArray;
 
 /**
- * @author Kostya on 09.07.2016.
+ * Created by Kostya on 10.07.2016.
  */
 public enum Terminals {
     XK3118T1 {
-        int mode;
         /** Режим передачи данных. */
         private final SparseArray<Object> modeArray = new SparseArray<>();
         {   /** Режим по умолчанию. */
@@ -37,17 +36,14 @@ public enum Terminals {
         public String filter(String data) {
             return data;
         }
-
-        public int getMode() {return mode;}
-        public void setMode(int mode) {this.mode = mode;}
     },
     CI200A {
         @Override
         public String filter(String data) {
             return data;
         }
-    },
-    DEFAULT {
+    },DEFAULT {
+
         @Override
         public String filter(String data) {
             return data;
@@ -59,5 +55,4 @@ public enum Terminals {
      * @return Возврат данных поготовленых для клиента.
      */
     public abstract String filter(String data);
-
 }
