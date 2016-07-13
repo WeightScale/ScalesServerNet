@@ -84,7 +84,7 @@ public class DataTransferringManager {
                             String ip = getIPv4FromServiceInfo(serviceInfo);
                             Globals.getInstance().getLocalTerminal().setIpAddress(ip);
                             /** Посылаем локальный терминал клиенту. */
-                            new CommandObject(Commands.CMD_DEFAULT_TERMINAL, Globals.getInstance().getLocalTerminal()).sendDevicesInNetwork(getContext(),getIPv4FromServiceInfo(ev.getInfo()));
+                            new CommandObject(Commands.CMD_DEFAULT_TERMINAL, Globals.getInstance().getLocalTerminal()).sendDevicesInNetwork(getContext(),ip);
                             //sendObjectToDevicesInNetwork(getContext(), getIPv4FromServiceInfo(ev.getInfo()), Globals.getInstance().getLocalTerminal());
                             onRegisterServiceListener.onEvent(jmdns.list(serviceType).length);
                         }
@@ -189,7 +189,7 @@ public class DataTransferringManager {
     }
 
     public void sendObjectToAllDevicesInNetwork(final Context context, Object object){
-        if (jmdns != null) {
+        /*if (jmdns != null) {
 
             if (executorService.isShutdown())
                 executorService = Executors.newCachedThreadPool();
@@ -198,6 +198,18 @@ public class DataTransferringManager {
             for (String ipAddress : ipAddressesSet) {
                 ((CommandObject)object).sendDevicesInNetwork(context, ipAddress);
                 //sendObjectToDevicesInNetwork(context, ipAddress, object);
+            }
+        }*/
+
+        if (jmdns != null) {
+
+            ArrayList<ServerThread> serverThreads = serverThreadProcessor.getListThread();
+            for (ServerThread thread : serverThreads){
+                try {
+                    thread.writeObject(object);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

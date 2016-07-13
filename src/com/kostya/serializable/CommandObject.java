@@ -33,13 +33,21 @@ public class CommandObject implements Serializable {
     }
 
     public CommandObject execute(Context context){
-        if (object == null)
+        if (object == null){
             return new CommandObject(commandName, commandName.fetch(context));
-        else{
+        }else{
             commandName.setup(context, object);
             return new CommandObject(commandName);
         }
+    }
 
+    public CommandObject execute(Context context, ObjectOutputStream outputStream){
+        if (object == null){
+            output(context, outputStream);
+        }else{
+            commandName.setup(context, object);
+        }
+        return this;
     }
 
     public void outputSocket(Context context, Socket socket){
@@ -48,8 +56,14 @@ public class CommandObject implements Serializable {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectOutputStream.writeObject(this);
             objectOutputStream.close();
-        } catch (IOException e) {
-        }
+        } catch (IOException e) {}
+    }
+
+    public void output(Context context, ObjectOutputStream objectOutputStream){
+        object = commandName.fetch(context);
+        try {
+            objectOutputStream.writeObject(this);
+        } catch (IOException e) {}
     }
 
     public CommandObject appendObject(Object o){
