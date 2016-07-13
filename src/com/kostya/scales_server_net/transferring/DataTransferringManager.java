@@ -1,12 +1,17 @@
 package com.kostya.scales_server_net.transferring;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.util.Log;
+import com.kostya.scales_server_net.Globals;
 import com.kostya.scales_server_net.Main;
 import com.kostya.scales_server_net.service.ServiceScalesNet;
+import com.kostya.serializable.CommandObject;
+import com.kostya.serializable.Commands;
+import com.kostya.terminals.TerminalObject;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
@@ -31,6 +36,8 @@ public class DataTransferringManager {
     private ServiceScalesNet.OnRegisterServiceListener onRegisterServiceListener;
     private ExecutorService executorService;
     private JmDNS jmdns;
+    Context context;
+    private List<ServiceInfo> listClients = new ArrayList<>();
     private ServiceListener listener;
     private ServiceInfo serviceInfo;
     private MulticastLock multiCastLock;
@@ -39,14 +46,13 @@ public class DataTransferringManager {
     private boolean registered;
 
 
-    public DataTransferringManager(String type){
+    public DataTransferringManager(Context context, String type){
+        this.context = context;
         executorService = Executors.newCachedThreadPool();
         serviceType = type;
     }
 
-    /*public DataTransferringManager(){
-        executorService = Executors.newCachedThreadPool();
-    }*/
+    public Context getContext() {return context;}
 
     public DataTransferringManager(String type, ServiceScalesNet.OnRegisterServiceListener listener){
         serviceType = type;
@@ -71,7 +77,17 @@ public class DataTransferringManager {
                 jmdns.addServiceListener(serviceType, listener = new ServiceListener() {
                     @Override
                     public void serviceResolved(ServiceEvent ev) {
-                        Log.i(TAG, "Service resolved " + ev.getName());
+                        /** Если сервер добавляем список серверов. */
+                        if (ev.getName().startsWith(SERVICE_INFO_NAME_CLIENT)){
+                            listClients.add(ev.getInfo());
+                            onRegisterServiceListener.onEvent(listClients.size());
+                            String ip = getIPv4FromServiceInfo(serviceInfo);
+                            Globals.getInstance().getLocalTerminal().setIpAddress(ip);
+                            /** Посылаем локальный терминал клиенту. */
+                            new CommandObject(Commands.CMD_DEFAULT_TERMINAL, Globals.getInstance().getLocalTerminal()).sendDevicesInNetwork(getContext(),getIPv4FromServiceInfo(ev.getInfo()));
+                            //sendObjectToDevicesInNetwork(getContext(), getIPv4FromServiceInfo(ev.getInfo()), Globals.getInstance().getLocalTerminal());
+                            onRegisterServiceListener.onEvent(jmdns.list(serviceType).length);
+                        }
                     }
 
                     @Override
@@ -83,8 +99,6 @@ public class DataTransferringManager {
 
                     @Override
                     public void serviceAdded(ServiceEvent event) {
-                        //ServiceInfo[] info = jmdns.list(SERVICE_INFO_TYPE);
-                        onRegisterServiceListener.onEvent(jmdns.list(serviceType).length);
                         jmdns.requestServiceInfo(event.getType(), event.getName(), 1);
                     }
                 });
@@ -181,15 +195,20 @@ public class DataTransferringManager {
                 executorService = Executors.newCachedThreadPool();
 
             Set<String> ipAddressesSet = getNeighborDevicesIpAddressesSet(context);
-            for (String serverIpAddress : ipAddressesSet) {
-                executorService.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        new ClientProcessor(object, serverIpAddress, context);
-                    }
-                });
+            for (String ipAddress : ipAddressesSet) {
+                ((CommandObject)object).sendDevicesInNetwork(context, ipAddress);
+                //sendObjectToDevicesInNetwork(context, ipAddress, object);
             }
         }
+    }
+
+    public void sendObjectToDevicesInNetwork(final Context context, String ipAddress, Object object){
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                new ClientProcessor(object, ipAddress, context);
+            }
+        });
     }
 
     public void sendMessageToAllDevicesInNetwork(final Context context, String message){

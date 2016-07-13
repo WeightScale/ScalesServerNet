@@ -42,7 +42,8 @@ public enum Terminals {
         public String filter(String data) {
             return data;
         }
-    },DEFAULT {
+    },
+    DEFAULT {
 
         @Override
         public String filter(String data) {

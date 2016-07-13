@@ -2,6 +2,8 @@ package com.kostya.scales_server_net.transferring;
 
 import android.content.Context;
 import android.util.Log;
+import com.kostya.serializable.CommandObject;
+import com.kostya.terminals.TerminalObject;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -15,6 +17,8 @@ public class ServerSocketProcessorRunnable implements Runnable {
     private final Context context;
     private BufferedReader inputBufferedReader;
     private PrintWriter outputPrintWriter;
+    ObjectInputStream objectInputStream;
+    ObjectOutputStream objectOutputStream;
 
 
     private static final String TAG = "SERVER_SOCKET";
@@ -43,9 +47,9 @@ public class ServerSocketProcessorRunnable implements Runnable {
                 Socket socket = serverSocket.accept();
                 Log.v(TAG, "ACCEPTED");
 
-                InputStream inputStream = socket.getInputStream();
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                inputBufferedReader = new BufferedReader(inputStreamReader);
+                //InputStream inputStream = socket.getInputStream();
+                //InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                //inputBufferedReader = new BufferedReader(inputStreamReader);
 
 //                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
 //                BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
@@ -53,7 +57,9 @@ public class ServerSocketProcessorRunnable implements Runnable {
 //                printWriter.println("some info");
 
                 //outputPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-                processInputInputOutputBuffers();
+                //processInputInputOutputBuffers();
+                processInputInputOutputObject(socket);
+
             }
 
             inputBufferedReader.close();
@@ -80,6 +86,41 @@ public class ServerSocketProcessorRunnable implements Runnable {
             Log.d(TAG, "Received message : " + inputLine);
             //outputPrintWriter.println("YOU TEXT ARRIVED. THANKS");
         }
+    }
+
+    private void processInputInputOutputObject(Socket socket) {
+
+        try {
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
+            //objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            Object object = objectInputStream.readObject();
+            if (object !=null){
+                if(object instanceof CommandObject){
+                    ((CommandObject)object).outputSocket(context, socket);
+                    //((CommandObject)object).execute(context);
+                }
+            }
+            /*executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (object !=null){
+                        if(object instanceof CommandObject){
+                            String address = socket.getRemoteSocketAddress().toString();
+                            ((CommandObject)object).execute(context);
+                        }else if (object instanceof TerminalObject){
+                            Globals.getInstance().setCurrentTerminal((TerminalObject)object);
+                            TerminalObject t = Globals.getInstance().getCurrentTerminal();
+                            int s = t.getComPortObject().getSpeed();
+                        }
+                    }
+                }
+            });*/
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }finally{
+            try {objectInputStream.close();} catch (IOException e1) {}
+        }
+
     }
 
     public void closedSocket() throws IOException {

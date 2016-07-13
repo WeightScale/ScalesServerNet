@@ -12,7 +12,7 @@ public class ClientProcessor {
     private Socket socket;
     private final Context context;
     private final String serverIpAddress;
-    private static final int TIME_OUT_CONNECT = 500; /** Время в милисекундах. */
+    private static final int TIME_OUT_CONNECT = 2000; /** Время в милисекундах. */
     private static  final String TAG = "ClientProcess";
 
     public ClientProcessor(String textForSend, String serverIpAddress, Context context) {

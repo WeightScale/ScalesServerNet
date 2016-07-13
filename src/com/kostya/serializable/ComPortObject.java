@@ -8,13 +8,14 @@ import android.content.Context;
 import com.felhr.usbserial.UsbSerialInterface;
 import com.kostya.scales_server_net.provider.SystemTable;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
  * Класс для настроек COM порта (USB).
  */
-public class ComPortObject {
+public class ComPortObject implements Serializable {
     //private final SystemTable systemTable;
     int speed;
     int dataBits;

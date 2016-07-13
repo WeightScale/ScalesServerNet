@@ -8,6 +8,7 @@ import com.kostya.scales_server_net.provider.EventsTable;
 import com.kostya.scales_server_net.provider.SystemTable;
 import com.kostya.scales_server_net.settings.Preferences;
 import com.kostya.serializable.ComPortObject;
+import com.kostya.terminals.TerminalObject;
 import com.kostya.terminals.Terminals;
 
 import java.io.File;
@@ -24,7 +25,8 @@ public class Globals {
     /** Настройки для весов. */
     protected Preferences preferencesScales;
     protected PackageInfo packageInfo;
-    ComPortObject comPortObject;
+    private TerminalObject localTerminal;
+    //ComPortObject comPortObject;
     /** Версия программы весового модуля. */
     private final int microSoftware = 4;
     protected String networkOperatorName;
@@ -66,15 +68,20 @@ public class Globals {
                 new EventsTable(context).insertNewEvent("Путь не созданый: " + pathLocalForms.getPath(), EventsTable.Event.PATH_STORE);
             }
         }
-
-
+        /** Создаем локальный весовой терминал. */
+        localTerminal = new TerminalObject(Terminals.values()[Integer.valueOf(new SystemTable(context).getProperty(SystemTable.Name.TERMINAL,String.valueOf(Terminals.DEFAULT.ordinal())))]);
+        /** Извлекаем настройки из базы данных. */
         SystemTable systemTable = new SystemTable(context);
-        comPortObject = new ComPortObject();
+        ComPortObject comPortObject = new ComPortObject();
         comPortObject.setSpeed(Integer.valueOf(systemTable.getProperty(SystemTable.Name.SPEED_PORT, "9600")));
         comPortObject.setDataBits(usbProperties.get(systemTable.getProperty(SystemTable.Name.FRAME_PORT, "8")));
         comPortObject.setStopBits(usbProperties.get(systemTable.getProperty(SystemTable.Name.STOP_BIT, "1")));
         comPortObject.setParity(usbProperties.get(systemTable.getProperty(SystemTable.Name.PARITY_BIT, "none")));
         comPortObject.setFlowControl(usbProperties.get(systemTable.getProperty(SystemTable.Name.FLOW_CONTROL, "OFF")));
+
+        /** Добавляем сохраненные настройки порта. */
+        localTerminal.setComPortObject(comPortObject);
+
 
     }
 
@@ -138,5 +145,5 @@ public class Globals {
 
     public static void setInstance(Globals instance) { Globals.instance = instance; }
 
-    public ComPortObject getComPortObject() {return comPortObject;}
+    public TerminalObject getLocalTerminal() {return localTerminal;}
 }

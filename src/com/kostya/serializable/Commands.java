@@ -19,7 +19,7 @@ public enum  Commands implements Serializable {
     CMD_VERSION(){
 
         @Override
-        void setup(Context context, String d) {
+        void setup(Context context, Object o) {
         }
 
         @Override
@@ -30,8 +30,8 @@ public enum  Commands implements Serializable {
     /** Имя конкретной сети WiFi. */
     CMD_SSID_WIFI(){
         @Override
-        void setup(Context context, String d){
-            new SystemTable(context).updateEntry(SystemTable.Name.WIFI_SSID, d);
+        void setup(Context context, Object o){
+            new SystemTable(context).updateEntry(SystemTable.Name.WIFI_SSID, (String) o);
         }
 
         @Override
@@ -46,8 +46,8 @@ public enum  Commands implements Serializable {
     /** Ключ конкретной сети WiFi. */
     CMD_KEY_WIFI(){
         @Override
-        void setup(Context context, String d){
-            new SystemTable(context).updateEntry(SystemTable.Name.WIFI_KEY, d);
+        void setup(Context context, Object o){
+            new SystemTable(context).updateEntry(SystemTable.Name.WIFI_KEY, (String) o);
         }
 
         @Override
@@ -62,7 +62,7 @@ public enum  Commands implements Serializable {
     /** Выключить WiFi для пересоединения. */
     CMD_RECONNECT_SERVER_NET() {
         @Override
-        void setup(Context context, String d) {
+        void setup(Context context, Object o) {
             WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             wifi.setWifiEnabled(false);
         }
@@ -77,7 +77,7 @@ public enum  Commands implements Serializable {
     /** Данные usb. */
     CMD_OUT_USB() {
         @Override
-        void setup(Context context, String d) {
+        void setup(Context context, Object o) {
 
         }
 
@@ -89,7 +89,7 @@ public enum  Commands implements Serializable {
     },
     CMD_ERROR() {
         @Override
-        void setup(Context context, String d) {
+        void setup(Context context, Object o) {
 
         }
 
@@ -101,22 +101,22 @@ public enum  Commands implements Serializable {
     /** Выбор терминала. */
     CMD_DEFAULT_TERMINAL() {
         @Override
-        void setup(Context context, String d) {
+        void setup(Context context, Object o) {
             try {
-                Globals.getInstance().terminal = Terminals.values()[Integer.valueOf(d)];
-                new SystemTable(context).updateEntry(SystemTable.Name.TERMINAL, d);
+                Globals.getInstance().terminal = Terminals.values()[Integer.valueOf((String) o)];
+                new SystemTable(context).updateEntry(SystemTable.Name.TERMINAL, (String) o);
             }catch (Exception e){}
         }
 
         @Override
-        String fetch(Context context) {
-            return String.valueOf(Globals.getInstance().terminal.ordinal());
+        Object fetch(Context context) {
+            return Globals.getInstance().getLocalTerminal();
         }
     },
     /** Лист список терминалов. */
     CMD_LIST_TERMINALS() {
         @Override
-        void setup(Context context, String d) {
+        void setup(Context context, Object o) {
 
         }
 
@@ -131,13 +131,24 @@ public enum  Commands implements Serializable {
     },
     CMD_COM_PORT {
         @Override
-        void setup(Context context, String d) {
+        void setup(Context context, Object o) {
 
         }
 
         @Override
         Object fetch(Context context) {
-            return Globals.getInstance().getComPortObject();
+            return Globals.getInstance().getLocalTerminal().getComPortObject();
+        }
+    },
+    CMD_GET_TERMINAL {
+        @Override
+        void setup(Context context, Object o) {
+
+        }
+
+        @Override
+        Object fetch(Context context) {
+            return Globals.getInstance().getLocalTerminal();
         }
     };
 
@@ -145,7 +156,7 @@ public enum  Commands implements Serializable {
 
     private String data;
     private String command;
-    abstract void setup(Context context,String d);
+    abstract void setup(Context context, Object o);
     abstract Object fetch(Context context);
 
     public String toString() { return command; }

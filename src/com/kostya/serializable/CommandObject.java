@@ -3,44 +3,68 @@ package com.kostya.serializable;
 
 
 import android.content.Context;
+import com.kostya.scales_server_net.transferring.ClientProcessor;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author Kostya  on 10.07.2016.
  */
 public class CommandObject implements Serializable {
     private static final long serialVersionUID = 7526471155622776147L;
+    //CommandObject instance;
+    //private ExecutorService executorService;
     Commands commandName;
-    String value = "";
-    Object object;
-    public CommandObject(Commands name, String value){
-        this.commandName = name;
-        this.value = value;
-    }
-
-    public CommandObject(Commands name, Object object){
-        this.commandName = name;
-        this.object = object;
+    Object object = null;
+    public CommandObject(Commands name, Object o){
+        this(name);
+        this.object = o;
     }
 
     public CommandObject(Commands name){
-        this.commandName = name;
+        //instance = this;
+        commandName = name;
+        //executorService = Executors.newCachedThreadPool();
     }
 
     public CommandObject execute(Context context){
-        if (value.isEmpty())
+        if (object == null)
             return new CommandObject(commandName, commandName.fetch(context));
         else{
-            commandName.setup(context, value);
+            commandName.setup(context, object);
             return new CommandObject(commandName);
         }
 
     }
 
-    public CommandObject appendValue(String v){
-        value = v;
+    public void outputSocket(Context context, Socket socket){
+        object = commandName.fetch(context);
+        try {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            objectOutputStream.writeObject(this);
+            objectOutputStream.close();
+        } catch (IOException e) {
+        }
+    }
+
+    public CommandObject appendObject(Object o){
+        object = o;
         return this;
+    }
+
+    public void sendDevicesInNetwork(final Context context, String ipAddress){
+        //CommandObject obj = this;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                new ClientProcessor(CommandObject.this, ipAddress, context);
+            }
+        }).start();
     }
 
     /**

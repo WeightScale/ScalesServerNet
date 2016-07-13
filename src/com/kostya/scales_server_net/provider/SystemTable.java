@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import com.kostya.terminals.Terminals;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -203,6 +204,7 @@ public class SystemTable {
         insert(db, Name.WIFI_SSID, "SSID");
         insert(db, Name.WIFI_KEY, "12345678");
         insert(db, Name.WIFI_DEFAULT, "0");
+        insert(db, Name.TERMINAL, Terminals.DEFAULT.name());
     }
 
     /** Вставляем настройку в таблицу.

@@ -228,7 +228,7 @@ public class ServiceScalesNet extends Service{
 
     private void setupSerialPort(UsbDevice usbDevice){
         try {
-            ComPortObject comPortObject = Globals.getInstance().getComPortObject();
+            ComPortObject comPortObject = Globals.getInstance().getLocalTerminal().getComPortObject();
             UsbDeviceConnection connection = usbManager.openDevice(usbDevice);
             serialPort = UsbSerialDevice.createUsbSerialDevice(usbDevice, connection);
             if (serialPort != null) {
@@ -318,7 +318,7 @@ public class ServiceScalesNet extends Service{
                     //dataTransferringManager.sendObjectToAllDevicesInNetwork(getBaseContext(), new CommandObject(Commands.CMD_OUT_USB, data));
                     //CommandObject command = new CommandObject(Commands.CMD_OUT_USB).appendValue(data);
                     //command.appendValue(data);
-                    dataTransferringManager.sendObjectToAllDevicesInNetwork(getBaseContext(), new CommandObject(Commands.CMD_OUT_USB).appendValue(data));
+                    dataTransferringManager.sendObjectToAllDevicesInNetwork(getBaseContext(), new CommandObject(Commands.CMD_OUT_USB).appendObject(data));
                     executorService.execute(new Runnable() {
                         @Override
                         public void run() {
@@ -328,6 +328,7 @@ public class ServiceScalesNet extends Service{
                 }
             } catch (Exception e){
                 // TODO: 08.07.2016
+                Log.e(TAG, e.getMessage());
             }
         }
     };
